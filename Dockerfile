@@ -7,12 +7,8 @@ RUN git clone --recursive http://github.com/Kisensum/pydnp3 && \
     cd pydnp3 && \
     python setup.py install
 
-
-# COPY requirements.txt /tmp/
-# RUN pip install -r /tmp/requirements.txt
-
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 
-COPY *.py .
+COPY *.py /home/appuser/
