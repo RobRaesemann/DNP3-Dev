@@ -1,0 +1,25 @@
+[{
+    "binary" : [
+                {
+                    "tag": "binary_tag_1",
+                    "variant_type": "1",
+                    "index": 5
+                }
+
+            ]
+    },
+    {
+        "analog": [
+                {
+                    "tag": "analog_tag1",
+                    "variant_type": 5,
+                    "index": 1
+                },
+                {
+                    "tag": "analog_tag2",
+                    "variant_type": 5,
+                    "index": 2
+                }
+            ]
+    }
+]
