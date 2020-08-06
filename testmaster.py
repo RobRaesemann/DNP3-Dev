@@ -1,17 +1,6 @@
 from pydnp3 import opendnp3, openpal, asiopal, asiodnp3
 import time
 
-# Create the manager for DNP3. This is always the first thing you
-# need to do for OpenDNP3.
-log_handler = asiodnp3.ConsoleLogger().Create()
-manager = asiodnp3.DNP3Manager(1, log_handler)
-retry = asiopal.ChannelRetry().Default()
-listener = asiodnp3.PrintingChannelListener().Create()
-channel = manager.AddTCPClient('client', opendnp3.levels.NOTHING, retry, '10.119.228.83', '0.0.0.0', 20000, listener)
-
-
-
-
 SLEEP_SECONDS = 5
 
 # The sequence of events handler - this receives measurment
@@ -78,44 +67,50 @@ class SOEHandler(opendnp3.ISOEHandler):
         pass
 
 
-analog_values = []
-binary_values = []
-values = {
-    'analog': analog_values,
-    'binary': binary_values
-}
-# values['analog'] = analog_values
-# values["binary"] = binary_values
 
 
 
+class Testmaster:
 
-soe_handler = SOEHandler()
-soe_handler.values = values
-new_val = soe_handler.values
+    _values = {'analog': [],'binary': []}
 
-master_application = asiodnp3.DefaultMasterApplication().Create()
-stack_config = asiodnp3.MasterStackConfig()
-stack_config.master.responseTimeout = openpal.TimeDuration().Seconds(2)
-stack_config.link.RemoteAddr = 2
-master = channel.AddMaster('master', soe_handler, master_application, stack_config)
-master.Enable()
+    def _setValues(self, values):
+        _values = values
 
-time.sleep(SLEEP_SECONDS)
-# NUMBER_OF_OUTPUTS = 20
-# group_variation = opendnp3.GroupVariationID(30, 5)
-# master.ScanRange(group_variation, 0, NUMBER_OF_OUTPUTS)
+    def _getValues(self):
+        return _values
 
-while(1):
-    time.sleep(10)
-    # master.AddClassScan(opendnp3.ClassField().AllClasses(),
-    #                                               openpal.TimeDuration().Minutes(30),
-    #                                               opendnp3.TaskConfig().Default())
-    print(f"Analog Value Count: {len(values['analog'])}  Binary: {len(values['binary'])}")
+    _values = property(_getValues, _setValues)
+
+    def __init__(self):
+        soe_handler = SOEHandler()
+        soe_handler.values = _values
+
+        # Create the manager for DNP3. This is always the first thing you
+        # need to do for OpenDNP3.
+        log_handler = asiodnp3.ConsoleLogger().Create()
+        manager = asiodnp3.DNP3Manager(1, log_handler)
+        retry = asiopal.ChannelRetry().Default()
+        listener = asiodnp3.PrintingChannelListener().Create()
+        channel = manager.AddTCPClient('client', opendnp3.levels.NOTHING, retry, '10.119.228.83', '0.0.0.0', 20000, listener)
 
 
-master.Disable()
-master = None
-channel.Shutdown()
-channel = None
-manager.Shutdown()
+
+        time.sleep(SLEEP_SECONDS)
+        # NUMBER_OF_OUTPUTS = 20
+        # group_variation = opendnp3.GroupVariationID(30, 5)
+        # master.ScanRange(group_variation, 0, NUMBER_OF_OUTPUTS)
+
+        while(1):
+            time.sleep(10)
+            # master.AddClassScan(opendnp3.ClassField().AllClasses(),
+            #                                               openpal.TimeDuration().Minutes(30),
+            #                                               opendnp3.TaskConfig().Default())
+            print(f"Analog Value Count: {len(values['analog'])}  Binary: {len(values['binary'])}")
+
+
+    def __del__(self):
+        channel.Shutdown()
+        channel = None
+        manager.Shutdown()
+        manager = None
