@@ -6,7 +6,7 @@ from pydnp3 import opendnp3, openpal, asiopal, asiodnp3
 from visitors import *
 
 FILTERS = opendnp3.levels.NORMAL | opendnp3.levels.ALL_COMMS
-HOST = "127.0.0.1"
+HOST = "10.119.228.61"
 LOCAL = "0.0.0.0"
 PORT = 20000
 
