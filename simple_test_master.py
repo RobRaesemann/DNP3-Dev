@@ -83,7 +83,7 @@ log_handler = asiodnp3.ConsoleLogger().Create()
 manager = asiodnp3.DNP3Manager(1, log_handler)
 retry = asiopal.ChannelRetry().Default()
 listener = asiodnp3.PrintingChannelListener().Create()
-channel = manager.AddTCPClient('client', opendnp3.levels.NOTHING, retry, "127.0.0.1", '0.0.0.0', 20000, listener)
+channel = manager.AddTCPClient('client', opendnp3.levels.NOTHING, retry, '192.168.69.166', '0.0.0.0', 20000, listener)
 
 soe_handler = SOEHandler()
 soe_handler.values = values
